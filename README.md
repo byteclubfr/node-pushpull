@@ -14,6 +14,12 @@ Installation
 npm install --save pushpull
 ```
 
+If you don't already use Redis and still use npm ≤ 2.x, you'll have to install `redis` too:
+
+```sh
+npm install --save redis
+```
+
 You may want to install `hiredis` to, whenever possible:
 
 ```sh
