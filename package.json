@@ -4,7 +4,7 @@
   "description": "Push/Pull clients using Redis lists as backend",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --check-leaks --compilers js:babel/register",
+    "test": "mocha --check-leaks",
     "prepublish": "babel --source-maps --out-dir lib src"
   },
   "repository": {
@@ -20,7 +20,8 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "redis": "^0.12.1"
   },
   "devDependencies": {
     "babel": "^4.3.0",
@@ -37,5 +38,8 @@
     "slave",
     "scheduler",
     "sender"
-  ]
+  ],
+  "dependencies": {
+    "lodash": "^3.2.0"
+  }
 }
