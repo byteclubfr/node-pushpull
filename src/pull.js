@@ -7,7 +7,7 @@ export default class Pull extends EventEmitter {
   constructor (options = {}) {
     var {
       queue,
-      timeout = 60
+      timeout = 30
     } = options;
 
     if (!queue) {
