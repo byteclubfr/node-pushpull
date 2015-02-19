@@ -14,15 +14,16 @@ export default class Pull extends EventEmitter {
       throw new Error("Mandatory option 'queue' not set");
     }
 
-    var client = this._redisClient = redisClient(options);
+    this._queue = queue;
+    this._redisClient = redisClient(options);
 
-    client.on("error", (err) => this.emit("error", err));
+    this._redisClient.on("error", (err) => this.emit("error", err));
 
     var loop = () => {
       if (this._paused) {
         setImmediate(loop);
       } else {
-        client.blpop(queue, timeout, onPop(this, queue, loop));
+        this._redisClient.blpop(queue, timeout, onPop(this, loop));
       }
     };
 
@@ -53,8 +54,8 @@ function onLoopError (ev) {
   }
 }
 
-function onPop (ev, queue, loop) {
-  var onError = onLoopError(ev);
+function onPop (pull, loop) {
+  var onError = onLoopError(pull);
 
   return function (err, res) {
     if (err) {
@@ -72,7 +73,7 @@ function onPop (ev, queue, loop) {
       return onError(new Error("Unexpected response for BLPOP: " + String(res)), loop);
     }
 
-    if (resQueue !== queue) {
+    if (resQueue !== pull._queue) {
       return onError("Invalid queue: " + resQueue, loop);
     }
 
@@ -87,12 +88,12 @@ function onPop (ev, queue, loop) {
       return onError(e, loop);
     }
 
-    if (ev._paused) {
+    if (pull._paused) {
       // Note we don't use an array: next loop tick won't trigger BLPOP
       // and _buffered_data won't be overriden until resume() is called
-      ev._buffered_data = data;
+      pull._buffered_data = data;
     } else {
-      ev.emit("data", data);
+      pull.emit("data", data);
     }
 
     setImmediate(loop);

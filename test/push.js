@@ -21,7 +21,7 @@ describe("Push", () => {
 
   it("should emit 'pushed' when pushing data", (done) => {
     var data = {"some": "data"};
-    push.emit("data", data);
+    push.write(data);
     push.once("error", done);
     push.once("pushed", (pushed) => {
       expect(pushed).toEqual(data);
@@ -30,7 +30,7 @@ describe("Push", () => {
   });
 
   it("should call callback when pushing data", (done) => {
-    push.emit("data", {"other": "data"}, done);
+    push.write({"other": "data"}, done);
   });
 
   it("should have added items to Redis list", (done) => {

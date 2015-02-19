@@ -23,5 +23,5 @@ var Push = require("./").Push;
 var sender = new Push(options);
 
 for (var i = 0; i < 20; i++) {
-  sender.emit("data", "data " + i);
+  sender.write("data " + i);
 }

@@ -58,7 +58,7 @@ Push API
 --------
 
 * **`new Push(options)`**: constructor, see *Options* below
-* **`emit("data", data)`**: emit this event to push a job to queue
+* **`write(data)`**: emit this event to push a job to queue
 * **`pushed` event**: emitted when data has been pushed successfully
 * **`error` event**: emitter when an error occurs (seriously)
 * **`end()`**: close the underlying Redis client, which obviously prevents any further query

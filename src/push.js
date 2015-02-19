@@ -11,11 +11,14 @@ export default class Push extends EventEmitter {
       throw new Error("Mandatory option 'queue' not set");
     }
 
-    var client = this._redisClient = redisClient(options);
+    this._queue = queue;
+    this._redisClient = redisClient(options);
 
-    client.on("error", (err) => this.emit("error", err));
+    this._redisClient.on("error", (err) => this.emit("error", err));
+  }
 
-    this.on("data", (data, cb) => client.rpush(queue, JSON.stringify(data), (err) => {
+  write (data, cb) {
+    this._redisClient.rpush(this._queue, JSON.stringify(data), (err) => {
 
       // Can specify a one-shot callback
       if (cb) {
@@ -29,7 +32,7 @@ export default class Push extends EventEmitter {
         this.emit("pushed", data);
       }
 
-    }));
+    });
   }
 
   end () {

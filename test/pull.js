@@ -25,7 +25,7 @@ describe("Pull", function () {
   it("should emit 'data' when data is pushed", function (done) {
     var push = new Push({"queue": queue});
     var pushed = {"some": "data"};
-    push.emit("data", pushed);
+    push.write(pushed);
     push.once("error", done);
     pull.once("error", done);
     pull.once("data", (pulled) => {
@@ -38,7 +38,7 @@ describe("Pull", function () {
   it("should pause and resume", function (done) {
     pull.pause();
     var push = new Push({"queue": queue});
-    push.emit("data", 42);
+    push.write(42);
     var onUnexpectedData = () => done(new Error("Unexpected data: should be paused!"));
     pull.on("data", onUnexpectedData);
     setTimeout(() => {
@@ -54,9 +54,9 @@ describe("Pull", function () {
   it("should handle data FIFO", function (done) {
     pull.pause();
     var push = new Push({"queue": queue});
-    push.emit("data", {"order": 1});
-    push.emit("data", {"order": 2});
-    push.emit("data", {"order": 3});
+    push.write({"order": 1});
+    push.write({"order": 2});
+    push.write({"order": 3});
     push.once("error", done);
     pull.once("error", done);
     var i = 1;
