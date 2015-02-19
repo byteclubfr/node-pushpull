@@ -1,68 +1,46 @@
 "use strict";
 
 import redisClient from "./redis-client";
-import {EventEmitter} from "events";
+import {Readable} from "stream";
 
-export default class Pull extends EventEmitter {
+export default class Pull extends Readable {
   constructor (options = {}) {
-    var {
-      queue,
-      timeout = 30
-    } = options;
+    super({ "objectMode": true });
+
+    var {queue, timeout = 30} = options;
 
     if (!queue) {
       throw new Error("Mandatory option 'queue' not set");
     }
 
+    this._timeout = timeout;
     this._queue = queue;
     this._redisClient = redisClient(options);
 
     this._redisClient.on("error", (err) => this.emit("error", err));
+  }
 
+  _read () {
     var loop = () => {
-      if (this._paused) {
-        setImmediate(loop);
-      } else {
-        this._redisClient.blpop(queue, timeout, onPop(this, loop));
-      }
+      this._redisClient.blpop(this._queue, this._timeout, onPop(this, loop));
     };
-
     loop();
   }
 
   end () {
     this._redisClient.end();
-  }
-
-  pause () {
-    this._paused = true;
-  }
-
-  resume () {
-    if (this._buffered_data) {
-      this.emit("data", this._buffered_data);
-      this._buffered_data = null;
-    }
-    this._paused = false;
-  }
-}
-
-function onLoopError (ev) {
-  return (err, loop) => {
-    ev.emit("error", err);
-    setImmediate(loop);
+    this.push(null);
   }
 }
 
 function onPop (pull, loop) {
-  var onError = onLoopError(pull);
-
   return function (err, res) {
     if (err) {
-      return onError(err, loop);
+      return pull.emit("error", err);
     }
 
     if (!res) {
+      // No job fetched: try again
       return setImmediate(loop);
     }
 
@@ -70,14 +48,15 @@ function onPop (pull, loop) {
     try {
       [resQueue, json] = res;
     } catch (e) {
-      return onError(new Error("Unexpected response for BLPOP: " + String(res)), loop);
+      return pull.emit("error", new Error("Unexpected response for BLPOP: " + String(res)));
     }
 
     if (resQueue !== pull._queue) {
-      return onError("Invalid queue: " + resQueue, loop);
+      return pull.emit("error", "Invalid queue: " + resQueue);
     }
 
     if (!json) {
+      // Empty data: try again
       return setImmediate(loop);
     }
 
@@ -85,17 +64,9 @@ function onPop (pull, loop) {
     try {
       data = JSON.parse(json);
     } catch (e) {
-      return onError(e, loop);
+      return pull.emit("error", e);
     }
 
-    if (pull._paused) {
-      // Note we don't use an array: next loop tick won't trigger BLPOP
-      // and _buffered_data won't be overriden until resume() is called
-      pull._buffered_data = data;
-    } else {
-      pull.emit("data", data);
-    }
-
-    setImmediate(loop);
+    pull.push(data);
   };
 }

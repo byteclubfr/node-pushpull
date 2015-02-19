@@ -52,6 +52,8 @@ sender.emit("data", {"some": "data"});
 Pull API
 --------
 
+**`Pull`** instances are valid **readable streams** (object mode).
+
 * **`new Pull(options)`**: constructor, see *Options* below
 * **`data` event**: emitted when data has been pulled from queue
 * **`error` event**: emitter when an error occurs (seriously)
@@ -62,6 +64,8 @@ Pull API
 
 Push API
 --------
+
+**`Push`** instances are valid **writable streams** (object mode).
 
 * **`new Push(options)`**: constructor, see *Options* below
 * **`write(data)`**: emit this event to push a job to queue
@@ -80,8 +84,3 @@ Options
 * **`host`** (default = localhost): Redis host (if `client` is not set)
 * **`port`** (default = 6379): Redis port (if `client` is not set)
 * **`database`**: Redis database to select once connected, if set
-
-TODO
-----
-
-* The API *looks like* streams, but it's not real streams. Make it real.
