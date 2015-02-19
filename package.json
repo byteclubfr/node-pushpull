@@ -16,10 +16,7 @@
   "bugs": {
     "url": "https://github.com/lmtm/node-pushpull/issues"
   },
-  "homepage": "https://github.com/lmtm/node-pushpull",
-  "directories": {
-    "test": "test"
-  },
+  "homepage": "https://github.com/lmtm/node-pushpull"
   "peerDependencies": {
     "redis": "^0.12.1"
   },

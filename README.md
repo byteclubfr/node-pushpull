@@ -84,3 +84,14 @@ Options
 * **`host`** (default = localhost): Redis host (if `client` is not set)
 * **`port`** (default = 6379): Redis port (if `client` is not set)
 * **`database`**: Redis database to select once connected, if set
+
+Internals
+---------
+
+In both `Push` and `Pull` instances, you have access to some semi-privates:
+
+* **`_redisClient`** is the internal Redis client instance
+* **`_queue`** is the name of the queue
+  * Note: changing its value will have expected effect, although you should only do it if you know what you're doing
+
+Why documenting those internals? Because I use them in a project using this module, and I want to make sure those features don't get away with no warning.
