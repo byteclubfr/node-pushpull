@@ -2,9 +2,18 @@
 
 var options = { "queue": "sample_queue" };
 
+var pushpull;
+try {
+  pushpull = require("./");
+} catch (e) {
+  console.log("You have to build 'lib' directory first: run `npm run prepublish`");
+  console.error(e);
+  process.exit(1);
+}
+
 // Pullers
 
-var Pull = require("./").Pull;
+var Pull = pushpull.Pull;
 
 var worker1 = new Pull(options);
 worker1.on("data", function (data) {
@@ -18,7 +27,7 @@ worker2.on("data", function (data) {
 
 // Pusher
 
-var Push = require("./").Push;
+var Push = pushpull.Push;
 
 var sender = new Push(options);
 
