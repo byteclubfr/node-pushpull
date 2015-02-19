@@ -1,6 +1,6 @@
 "use strict"
 
-import {foo} from "../index.js"
+import {foo} from "../src/foo"
 import expect from "expect"
 
 describe("base", () => {

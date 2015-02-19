@@ -1,4 +1,3 @@
-"use strict";
+"use strict"
 
-export var foo = () => 42
-
+module.exports = require("./lib/foo")

@@ -4,7 +4,8 @@
   "description": "Push/Pull clients using Redis lists as backend",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --check-leaks --compilers js:babel/register"
+    "test": "mocha --check-leaks --compilers js:babel/register",
+    "prepublish": "babel --source-maps --out-dir lib src"
   },
   "repository": {
     "type": "git",
