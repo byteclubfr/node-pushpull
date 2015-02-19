@@ -1,6 +1,6 @@
 {
   "name": "pushpull",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Push/Pull clients using Redis lists as backend",
   "main": "index.js",
   "scripts": {
