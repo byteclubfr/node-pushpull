@@ -1,6 +1,6 @@
 "use strict";
 
-import Pull from "./lib/pull";
-import Push from "./lib/push";
+import Pull from "./pull";
+import Push from "./push";
 
 export { Push, Pull };
