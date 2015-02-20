@@ -1,7 +1,7 @@
 {
   "name": "pushpull",
-  "version": "2.1.0",
-  "description": "Push/Pull clients using Redis lists as backend",
+  "version": "2.1.8",
+  "description": "Push/Pull pattern using Redis lists as backend",
   "main": "index.js",
   "scripts": {
     "test": "mocha --check-leaks",
@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/lmtm/node-pushpull/issues"
   },
-  "homepage": "https://github.com/lmtm/node-pushpull"
+  "homepage": "https://github.com/lmtm/node-pushpull",
   "peerDependencies": {
     "redis": "^0.12.1"
   },
